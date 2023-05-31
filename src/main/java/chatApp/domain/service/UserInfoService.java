@@ -29,10 +29,13 @@ public class UserInfoService {
 		
 		// 登録したいユーザ名が既存のユーザ名と重複しているか確認
 		UserInfo existingUser = userInfoRepository.findByUserName(userName);
+		if (existingUser != null) {
+			return new UserInfo();
+		}
 		
-		UserInfo newUSer = new UserInfo(userName, password, email);
+		UserInfo newUser = new UserInfo(userName, password, email);
 		
-		return userInfoRepository.save(newUSer);
+		return userInfoRepository.save(newUser);
 	}
 	
 	// 登録ユーザ情報更新

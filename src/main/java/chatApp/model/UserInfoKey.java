@@ -16,6 +16,9 @@ public class UserInfoKey implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	// ユーザid
+	private String userId;
+	
 	// ユーザ名
 	private String userName;
 	

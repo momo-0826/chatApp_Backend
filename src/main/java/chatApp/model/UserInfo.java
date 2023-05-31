@@ -8,12 +8,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.Data;
-//import lombok.Getter;
-//import lombok.Setter;
 
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "userInfo")
 @IdClass(value = UserInfoKey.class)
 public class UserInfo implements Serializable {
 	@Id
@@ -22,7 +20,7 @@ public class UserInfo implements Serializable {
 	
 	@Id
 	@Column(name="user_id")
-	private Long userId;
+	private String userId;
 	
 	@Id
 	@Column(name="user_name")
@@ -35,5 +33,15 @@ public class UserInfo implements Serializable {
 	@Id
 	@Column(name="email")
 	private String email;
+	
+	public UserInfo() {
+		
+	}
+	
+	public UserInfo(String userName, String password, String email) {
+		this.userName = userName;
+		this.password = password;
+		this.userName = email;
+	}
 	
 }

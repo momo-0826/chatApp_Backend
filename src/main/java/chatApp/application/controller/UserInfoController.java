@@ -35,7 +35,8 @@ public class UserInfoController {
 	@PostMapping("/user")
 	public UserInfo createUser(@RequestBody String userName, String password, String email) {
 		System.out.println("CreateCome");
-		return userInfoService.createUserInfo(userName, password, email);
+		UserInfo res = userInfoService.createUserInfo(userName, password, email);
+		return res;
 	}
 	
 	// 登録ユーザー情報を更新
