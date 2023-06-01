@@ -1,6 +1,5 @@
 package chatApp.application.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +19,11 @@ import chatApp.model.UserInfo;
 @CrossOrigin(origins = "http://localhost:8080")
 public class UserInfoController {
 	
-	@Autowired
-	UserInfoService userInfoService;
+	private final UserInfoService userInfoService;
+	
+	public UserInfoController(UserInfoService userInfoService) {
+		this.userInfoService = userInfoService;
+	}
 	
 	
 	// 登録ユーザー情報を取得
