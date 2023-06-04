@@ -15,16 +15,4 @@ public class UserInfoKey implements Serializable {
 	// id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	// ユーザid
-	private String userId;
-	
-	// ユーザ名
-	private String userName;
-	
-	// パスワード
-	private String password;
-	
-	// email
-	private String email;
 }

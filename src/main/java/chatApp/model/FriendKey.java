@@ -16,10 +16,4 @@ public class FriendKey implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	// ユーザid
-	private UserInfo user1;
-	
-	// ユーザ名
-	private UserInfo user2;
-	
 }

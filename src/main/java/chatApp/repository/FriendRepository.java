@@ -7,6 +7,6 @@ import chatApp.model.Friend;
 
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, Integer> {
-	public Friend findByUserName(String userName);
+//	public Friend findByUserName(String userName);
 	
 }
