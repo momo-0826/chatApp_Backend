@@ -3,6 +3,7 @@ package chatApp.model;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,33 +14,29 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "userInfo")
+@Table(name = "users")
 @IdClass(value = UserInfoKey.class)
 public class UserInfo implements Serializable {
 	@Id
 	@Column(name="id")
 	private Long id;
 	
-	@Id
 	@Column(name="user_id")
 	private String userId;
 	
-	@Id
 	@Column(name="user_name")
 	private String userName;
 	
-	@Id
 	@Column(name="password")
 	private String password;
 	
-	@Id
 	@Column(name="email")
 	private String email;
 	
-	@OneToMany(mappedBy = "user1")
+	@OneToMany(mappedBy = "user1", cascade = CascadeType.ALL)
 	private List<Friend> friend1;
 	
-	@OneToMany(mappedBy = "user2")
+	@OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
 	private List<Friend> friend2;
 	
 	public UserInfo() {
