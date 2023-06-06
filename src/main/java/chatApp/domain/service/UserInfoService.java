@@ -34,6 +34,8 @@ public class UserInfoService {
 		}
 		
 		UserInfo newUser = new UserInfo(userName, password, email);
+//		newUser.setId(1L);
+		System.out.println(newUser);
 		
 		return userInfoRepository.save(newUser);
 	}
