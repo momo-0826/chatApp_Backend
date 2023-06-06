@@ -43,7 +43,7 @@ public class UserInfo implements Serializable {
 	public UserInfo(String userName, String password, String email) {
 		this.userName = userName;
 		this.password = password;
-		this.userName = email;
+		this.email = email;
 	}
 	
 }
