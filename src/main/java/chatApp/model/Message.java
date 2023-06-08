@@ -1,11 +1,14 @@
 package chatApp.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -18,17 +21,19 @@ public class Message implements Serializable {
 	@Column(name="id")
 	private Long id;
 	
-	@Column(name="sender_id")
-	private String senderId;
+	@ManyToOne
+	@JoinColumn(name="sender_id")
+	private UserInfo senderId;
 	
-	@Column(name="recipient_id")
-	private String recipientId;
+	@ManyToOne
+	@JoinColumn(name="recipient_id")
+	private UserInfo recipientId;
 	
 	@Column(name="content")
 	private String content;
 	
 	@Column(name="timestamp")
-	private String timestamp;
+	private LocalDateTime timestamp;
 	
 	@Column(name="status")
 	private String status;
