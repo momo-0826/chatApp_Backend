@@ -15,14 +15,17 @@ import lombok.Data;
 @IdClass(value = FriendKey.class)
 public class Friend {
 	
+	// ID
 	@Id
 	@Column(name="id")
 	private Long id;
 	
+	// ユーザID(誰が誰の友達であるか、の'誰の'の方のユーザID)
 	@ManyToOne
 	@JoinColumn(name = "user1_id")
 	private UserInfo user1;
 	
+	// ユーザID(誰が誰の友達であるか、の'誰が'の方のユーザID)
 	@ManyToOne
 	@JoinColumn(name = "user2_id")
 	private UserInfo user2;

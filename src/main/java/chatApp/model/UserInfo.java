@@ -17,16 +17,21 @@ import lombok.Data;
 @Table(name = "users")
 @IdClass(value = UserInfoKey.class)
 public class UserInfo implements Serializable {
+	
+	// ID
 	@Id
 	@Column(name="id")
 	private Long id;
 	
+	// ユーザ名
 	@Column(name="user_name")
 	private String userName;
 	
+	// パスワード
 	@Column(name="password")
 	private String password;
 	
+	// メールアドレス
 	@Column(name="email")
 	private String email;
 	

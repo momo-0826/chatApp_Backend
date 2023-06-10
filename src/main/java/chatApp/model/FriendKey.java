@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 
 /**
@@ -13,7 +14,8 @@ import lombok.Data;
 public class FriendKey implements Serializable {
 	
 	// id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "friend_info_seq")
+    @SequenceGenerator(name = "friend_info_seq", sequenceName = "friend_id_seq", allocationSize = 1)
 	private Long id;
 	
 }
