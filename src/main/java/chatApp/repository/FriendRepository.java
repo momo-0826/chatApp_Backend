@@ -10,6 +10,6 @@ import chatApp.model.Friend;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, Integer> {
 	// 対象ユーザの友達であるユーザのIdを取得
-	public List<Friend> findByuUserId(Long id);
+	public List<Friend> findByUserId(Long id);
 	
 }

@@ -36,7 +36,7 @@ public class ChatInfoService {
 		BeanUtils.copyProperties(userInfo, userInfoDto);
 		
 		// ユーザ情報のIdを使用して友達情報を取得
-		List<Friend> friendsId = friendRepository.findByuUserId(userInfo.getId());
+		List<Friend> friendsId = friendRepository.findByUserId(userInfo.getId());
 				
 		// 取得した友達情報のfriendUserIdを使用して対象ユーザの友達であるユーザの情報を全員分取得
 		List<Long> idList = new ArrayList<>();
