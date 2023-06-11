@@ -18,12 +18,6 @@ public class UserInfoService {
 		return userInfoRepository.findByUserNameAndPassword(usrName, password);
 	}
 	
-//	// 友達情報返却
-//	public List<UserInfo> getFriendInfo(String usrName, String password){
-//		List<UserInfo> res = userInfoRepository.findByNamePass(usrName, password);
-//		return res;
-//	}
-	
 	// 登録ユーザ情報作成
 	public UserInfo createUserInfo(String userName, String password, String email) {
 		
@@ -34,8 +28,6 @@ public class UserInfoService {
 		}
 		
 		UserInfo newUser = new UserInfo(userName, password, email);
-//		newUser.setId(1L);
-		System.out.println(newUser);
 		
 		return userInfoRepository.save(newUser);
 	}

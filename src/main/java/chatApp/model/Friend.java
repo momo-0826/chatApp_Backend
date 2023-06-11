@@ -23,11 +23,11 @@ public class Friend {
 	// ユーザID(誰が誰の友達であるか、の'誰の'の方のユーザID)
 	@ManyToOne
 	@JoinColumn(name = "user1_id")
-	private UserInfo user1;
+	private UserInfo user;
 	
 	// ユーザID(誰が誰の友達であるか、の'誰が'の方のユーザID)
 	@ManyToOne
 	@JoinColumn(name = "user2_id")
-	private UserInfo user2;
+	private UserInfo friendUser;
 
 }
