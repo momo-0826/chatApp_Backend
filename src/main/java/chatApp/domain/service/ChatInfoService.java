@@ -25,7 +25,7 @@ public class ChatInfoService {
 	}
 	
 	// 登録ユーザ情報返却
-	public ChatInfoDto getUserInfo(String userName, String password) {
+	public ChatInfoDto getChatInfo(String userName, String password) {
 		ChatInfoDto chatInfoDto = new ChatInfoDto();
 		
 		// ユーザ情報を取得
@@ -47,9 +47,29 @@ public class ChatInfoService {
 		List<UserInfo> friendsInfo = userInfoRepository.findByIdList(idList);
 		
 		if(!friendsInfo.isEmpty()) {
+			// 取得した友達情報のfriendUserIdを使用して対象ユーザの友達であるユーザの情報を全員分取得
+			List<Long> friendIdList = new ArrayList<>();
+			for(UserInfo entity: friendsInfo) {
+				friendIdList.add(entity.getId());
+			}
+			List<Friend> friendsUserInfo = friendRepository.findByUser2Id(friendIdList);
+			int i = 0;
+			
+			// TODO 無駄な処理が多いため、要修正
 			for(Friend entity: friendsId) {
+				// 友達であるユーザのDto作成
+				UserInfoDto friendUser = new UserInfoDto();
+				friendUser.setId(friendsInfo.get(i).getId());
+				friendUser.setUserName(friendsInfo.get(i).getUserName());
+				friendUser.setPassword(friendsInfo.get(i).getPassword());
+				friendUser.setEmail(friendsInfo.get(i).getEmail());
+				
 				FriendDto friendDto = new FriendDto();
-				friendDto.setId();
+				friendDto.setId(entity.getId());
+				friendDto.setUserId(userInfo.getId());
+				friendDto.setFriendUserId(friendsUserInfo.get(i).getId());
+				friendDto.setFriendUser(friendUser);
+				i++;
 			}
 			
 		}

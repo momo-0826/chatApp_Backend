@@ -25,7 +25,7 @@ public class ChatInfoController {
 	// ユーザー情報、友達情報、メッセージを取得し、まとめて返却する
 	@GetMapping("/get-chat-info")
 	public ChatInfoDto getChatInfo(@RequestParam("name") String name, @RequestParam("password") String password){
-		ChatInfoDto res = userInfoService.getUserInfo(name, password);
+		ChatInfoDto res = chatInfoService.getChatInfo(name, password);
 		return res;
 	}
 	

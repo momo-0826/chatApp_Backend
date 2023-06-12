@@ -12,4 +12,7 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
 	// 対象ユーザの友達であるユーザのIdを取得
 	public List<Friend> findByUserId(Long id);
 	
+	// 対象ユーザの友達であるユーザのFriend情報を取得
+	public List<Friend> findByUser2Id(List<Long> friendUserId);
+	
 }
