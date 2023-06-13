@@ -35,10 +35,10 @@ public class UserInfo implements Serializable {
 	@Column(name="email")
 	private String email;
 	
-	@OneToMany(mappedBy = "user1", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Friend> friend1;
 	
-	@OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "friendUser", cascade = CascadeType.ALL)
 	private List<Friend> friend2;
 	
 	public UserInfo() {

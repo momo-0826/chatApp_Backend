@@ -8,20 +8,26 @@ import org.springframework.stereotype.Service;
 
 import chatApp.dto.ChatInfoDto;
 import chatApp.dto.FriendDto;
+import chatApp.dto.MessageDto;
 import chatApp.dto.UserInfoDto;
 import chatApp.model.Friend;
+import chatApp.model.Message;
 import chatApp.model.UserInfo;
 import chatApp.repository.FriendRepository;
+import chatApp.repository.MessageRepository;
 import chatApp.repository.UserInfoRepository;
 
 @Service
 public class ChatInfoService {
 	private final UserInfoRepository userInfoRepository;
 	private final FriendRepository friendRepository;
+	private final MessageRepository messageRepository;
 	
-	public ChatInfoService(UserInfoRepository userInfoRepository, FriendRepository friendRepository) {
+	public ChatInfoService(UserInfoRepository userInfoRepository, FriendRepository friendRepository, MessageRepository messageRepository) {
 		this.userInfoRepository = userInfoRepository;
 		this.friendRepository = friendRepository;
+		this.messageRepository = messageRepository;
+		
 	}
 	
 	// 登録ユーザ情報返却
@@ -34,6 +40,8 @@ public class ChatInfoService {
 		// 取得したユーザ情報をdtoにコピー
 		UserInfoDto userInfoDto = new UserInfoDto();
 		BeanUtils.copyProperties(userInfo, userInfoDto);
+		
+		chatInfoDto.setUserInfo(userInfoDto);
 		
 		// ユーザ情報のIdを使用して友達情報を取得
 		List<Friend> friendsId = friendRepository.findByUserId(userInfo.getId());
@@ -69,11 +77,24 @@ public class ChatInfoService {
 				friendDto.setUserId(userInfo.getId());
 				friendDto.setFriendUserId(friendsUserInfo.get(i).getId());
 				friendDto.setFriendUser(friendUser);
+				
+				chatInfoDto.getFriends().add(friendDto);
 				i++;
 			}
 			
+			// 対象者のユーザIdを使用して、ユーザのメッセージの取得
+			List<Message> messages = messageRepository.findBySenderIdANDRecipientIdIN(userInfo.getId(), friendIdList);
+			
+			List<MessageDto> messageDtoList = new ArrayList<>();
+			for(Message entity: messages) {
+				MessageDto messageDto = new MessageDto();
+				BeanUtils.copyProperties(entity, messageDto);
+				messageDtoList.add(messageDto);
+			}
+			
+			chatInfoDto.setMessages(messageDtoList);
+			
 		}
-		
 		
 		
 		return chatInfoDto;
