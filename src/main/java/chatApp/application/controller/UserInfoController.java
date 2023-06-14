@@ -42,13 +42,13 @@ public class UserInfoController {
 	
 	// 登録ユーザー情報を更新
 	@PostMapping("/user/{id}")
-	public UserInfo updateUser(@PathVariable(value = "id") int id, @RequestBody UserInfo UserInfo) {
+	public UserInfo updateUser(@PathVariable(value = "id") Long id, @RequestBody UserInfo UserInfo) {
 		return userInfoService.updateUserInfo(id, UserInfo);
 	}
 	
 	// 登録ユーザー情報を削除
 	@DeleteMapping("/user/{id}")
-	public void deleteUser(@PathVariable(value = "id") int id,@RequestBody UserInfo UserInfo) {
+	public void deleteUser(@PathVariable(value = "id") Long id,@RequestBody UserInfo UserInfo) {
 		userInfoService.deleteUserInfo(id);
 	}
 	

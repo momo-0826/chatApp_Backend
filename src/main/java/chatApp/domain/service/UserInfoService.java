@@ -33,7 +33,7 @@ public class UserInfoService {
 	}
 	
 	// 登録ユーザ情報更新
-	public UserInfo updateUserInfo(int id, UserInfo userInfo) {
+	public UserInfo updateUserInfo(Long id, UserInfo userInfo) {
 		UserInfo saveUser = userInfoRepository.findById(id).get();
 		saveUser.setUserName(userInfo.getUserName());
 		saveUser.setEmail(userInfo.getEmail());
@@ -43,7 +43,7 @@ public class UserInfoService {
 	}
 	
 	// 登録ユーザ情報削除
-	public void deleteUserInfo(Integer id) {
+	public void deleteUserInfo(Long id) {
 		userInfoRepository.deleteById(id);
 	}
 }

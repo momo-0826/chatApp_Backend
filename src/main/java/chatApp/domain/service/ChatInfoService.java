@@ -52,7 +52,7 @@ public class ChatInfoService {
 			idList.add(entity.getFriendUser().getId());
 		}
 		
-		List<UserInfo> friendsInfo = userInfoRepository.findByIdList(idList);
+		List<UserInfo> friendsInfo = userInfoRepository.findByIdIn(idList);
 		
 		if(!friendsInfo.isEmpty()) {
 			// 取得した友達情報のfriendUserIdを使用して対象ユーザの友達であるユーザの情報を全員分取得
@@ -60,7 +60,7 @@ public class ChatInfoService {
 			for(UserInfo entity: friendsInfo) {
 				friendIdList.add(entity.getId());
 			}
-			List<Friend> friendsUserInfo = friendRepository.findByUser2Id(friendIdList);
+			List<Friend> friendsUserInfo = friendRepository.findByFriendUser_IdIn(friendIdList);
 			int i = 0;
 			
 			// TODO 無駄な処理が多いため、要修正
@@ -83,7 +83,7 @@ public class ChatInfoService {
 			}
 			
 			// 対象者のユーザIdを使用して、ユーザのメッセージの取得
-			List<Message> messages = messageRepository.findBySenderIdANDRecipientIdIN(userInfo.getId(), friendIdList);
+			List<Message> messages = messageRepository.findBySenderIdAndRecipientIdIn(userInfo.getId(), friendIdList);
 			
 			List<MessageDto> messageDtoList = new ArrayList<>();
 			for(Message entity: messages) {
