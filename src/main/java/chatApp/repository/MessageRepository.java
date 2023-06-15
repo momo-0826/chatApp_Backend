@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import chatApp.model.Message;
 
 @Repository
-public interface MessageRepository extends JpaRepository<Message, Integer> {
-	public List<Message> findBySenderIdANDRecipientIdIN(Long senderId, List<Long> recipientId);
+public interface MessageRepository extends JpaRepository<Message, Long> {
+	public List<Message> findBySenderIdAndRecipientIdIn(Long senderId, List<Long> recipientId);
 }
