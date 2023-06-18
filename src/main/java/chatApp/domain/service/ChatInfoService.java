@@ -2,6 +2,7 @@ package chatApp.domain.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,12 @@ public class ChatInfoService {
 		
 		// ユーザ情報を取得
 		UserInfo userInfo = userInfoRepository.findByUserNameAndPassword(userName, password);
+		
+		if (Objects.isNull(userInfo)) {
+			System.out.println("userInfo");
+			System.out.println(userInfo);
+			return chatInfoDto;
+		}
 		
 		// 取得したユーザ情報をdtoにコピー
 		UserInfoDto userInfoDto = new UserInfoDto();
