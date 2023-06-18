@@ -39,8 +39,6 @@ public class ChatInfoService {
 		UserInfo userInfo = userInfoRepository.findByUserNameAndPassword(userName, password);
 		
 		if (Objects.isNull(userInfo)) {
-			System.out.println("userInfo");
-			System.out.println(userInfo);
 			return chatInfoDto;
 		}
 		
