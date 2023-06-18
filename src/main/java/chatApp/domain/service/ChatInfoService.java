@@ -68,6 +68,8 @@ public class ChatInfoService {
 			List<Friend> friendsUserInfo = friendRepository.findByFriendUser_IdIn(friendIdList);
 			int i = 0;
 			
+			List<FriendDto> tmpFriendList = new ArrayList<>();
+			
 			// TODO 無駄な処理が多いため、要修正
 			for(Friend entity: friendsId) {
 				// 友達であるユーザのDto作成
@@ -83,9 +85,12 @@ public class ChatInfoService {
 				friendDto.setFriendUserId(friendsUserInfo.get(i).getId());
 				friendDto.setFriendUser(friendUser);
 				
-				chatInfoDto.getFriends().add(friendDto);
+				tmpFriendList.add(friendDto);
+				
 				i++;
 			}
+			
+			chatInfoDto.setFriends(tmpFriendList);
 			
 			// 対象者のユーザIdを使用して、ユーザのメッセージの取得
 			List<Message> messages = messageRepository.findBySenderIdAndRecipientIdIn(userInfo.getId(), friendIdList);
