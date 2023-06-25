@@ -14,6 +14,7 @@ public class SecurityConfig {
 	// ログイン後/homeに遷移させる
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.cors().disable();
 		http.csrf().disable();
 		http.headers(header -> {
 			header.frameOptions().disable();
