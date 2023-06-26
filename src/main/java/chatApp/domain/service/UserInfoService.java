@@ -1,5 +1,7 @@
 package chatApp.domain.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import chatApp.model.UserInfo;
@@ -27,7 +29,14 @@ public class UserInfoService {
 			return new UserInfo();
 		}
 		
-		UserInfo newUser = new UserInfo(userName, password, email);
+		// パスワードをハッシュ化
+		PasswordEncoder passwordEncorder = new BCryptPasswordEncoder();
+		String hashedPassword = passwordEncorder.encode(password);
+		System.out.println("password");
+		System.out.println(password);
+		System.out.println("hashedPassword");
+		System.out.println(hashedPassword);
+		UserInfo newUser = new UserInfo(userName, hashedPassword, email);
 		
 		return userInfoRepository.save(newUser);
 	}
