@@ -1,5 +1,6 @@
 package chatApp.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,20 +20,36 @@ public class SecurityConfig {
 	// ログイン後/homeに遷移させる
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().disable();
-		http.csrf().disable();
+//        http.cors().disable();
+//		http.csrf().disable();
 		http.headers(header -> {
 			header.frameOptions().disable();
 		});
 		// antMatchers()、mvcMatchers()はSpring security5.8にて削除
 		// requestMatchers()を使用する
-		// "/h2-console/**"以下は、認可を必要とせず、対象パスへのアクセスを許可する。
-		http.authorizeHttpRequests(authorize -> {
-			authorize.requestMatchers("/h2-console/**").permitAll().anyRequest().authenticated();
-		});
-		http.formLogin(form -> {
-			form.defaultSuccessUrl("/home");
-		});
+//		http.authorizeHttpRequests(authorize -> {
+//			authorize.requestMatchers("/api/chatApp").permitAll().anyRequest().authenticated();
+//		});
+//		http.formLogin(form -> {
+//			form.defaultSuccessUrl("/home");
+//		});
+		
+		// ラムダDSLで記述
+		http.formLogin(login -> login
+				.loginProcessingUrl("/login")      // ユーザ名・パスワードの送信先
+				.loginPage("/login")               // ログイン画面のURL 
+				.defaultSuccessUrl("/")            // ログイン成功後のリダイレクト先URL
+				.failureForwardUrl("/login?error") // ログイン失敗後のリダイレクト先URL
+				.permitAll()                       // ログイン画面については未ログインでもアクセスできるようにする
+		).logout(logout -> logout
+				.logoutSuccessUrl("/")             // ログアウト後のリダイレクト先のURL
+		).authorizeHttpRequests(authz -> authz
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //"/css/**"等はログイン無しでアクセス可能とする
+				.requestMatchers("/").permitAll()  // "/"はログイン無しでもアクセス可能とする
+				.requestMatchers("/api/chatApp").permitAll().anyRequest().authenticated()
+		)
+		.cors(cors -> cors.disable())
+		.csrf(csrf -> csrf.disable());           
 		return http.build();
 	}
 	
