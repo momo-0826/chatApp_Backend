@@ -1,8 +1,12 @@
 package chatApp.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -17,39 +21,67 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	
+	@Autowired
+	private DataSource dataSource;
+	
+	private AuthenticationManager authenticationManager;
+	
 	// ログイン後/homeに遷移させる
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http.cors().disable();
 //		http.csrf().disable();
-		http.headers(header -> {
-			header.frameOptions().disable();
-		});
-		// antMatchers()、mvcMatchers()はSpring security5.8にて削除
-		// requestMatchers()を使用する
+//		http.headers(header -> {
+//			header.frameOptions().disable();
+//		});
+//		// antMatchers()、mvcMatchers()はSpring security5.8にて削除
+//		// requestMatchers()を使用する
 //		http.authorizeHttpRequests(authorize -> {
 //			authorize.requestMatchers("/api/chatApp").permitAll().anyRequest().authenticated();
 //		});
 //		http.formLogin(form -> {
 //			form.defaultSuccessUrl("/home");
 //		});
+//		.addFilterAfter(new RedirectLoginUserFilter(),UsernamePasswordAuthenticationFilter.class);
 		
 		// ラムダDSLで記述
-		http.formLogin(login -> login
-				.loginProcessingUrl("/login")      // ユーザ名・パスワードの送信先
-				.loginPage("/login")               // ログイン画面のURL 
-				.defaultSuccessUrl("/")            // ログイン成功後のリダイレクト先URL
-				.failureForwardUrl("/login?error") // ログイン失敗後のリダイレクト先URL
-				.permitAll()                       // ログイン画面については未ログインでもアクセスできるようにする
-		).logout(logout -> logout
-				.logoutSuccessUrl("/")             // ログアウト後のリダイレクト先のURL
-		).authorizeHttpRequests(authz -> authz
-				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //"/css/**"等はログイン無しでアクセス可能とする
-				.requestMatchers("/").permitAll()  // "/"はログイン無しでもアクセス可能とする
-				.requestMatchers("/api/chatApp").permitAll().anyRequest().authenticated()
-		)
-		.cors(cors -> cors.disable())
-		.csrf(csrf -> csrf.disable());           
+//		http.formLogin(login -> login
+//				.loginProcessingUrl("/login/process")      // ユーザ名・パスワードの送信先
+//				.loginPage("/login")               // ログイン画面のURL 
+//				.usernameParameter("username")
+//				.passwordParameter("password")
+//				.defaultSuccessUrl("/chat")            // ログイン成功後のリダイレクト先URL
+//				.failureForwardUrl("/login?error") // ログイン失敗後のリダイレクト先URL
+//				.permitAll()                       // ログイン画面については未ログインでもアクセスできるようにする
+//		).logout(logout -> logout
+//				.logoutSuccessUrl("/")             // ログアウト後のリダイレクト先のURL
+//		).authorizeHttpRequests(authz -> authz
+//				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() //"/css/**"等はログイン無しでアクセス可能とする
+//				.requestMatchers("/").permitAll()  // "/"はログイン無しでもアクセス可能とする
+//				.requestMatchers("/general").hasRole("GENERAL")
+//				.requestMatchers("/admin").hasRole("ADMIN")
+//				.requestMatchers("/api/chatApp").permitAll().anyRequest().authenticated()
+//		)
+//		.cors(cors -> cors.disable())
+//		.csrf(csrf -> csrf.disable());
+		
+		// 最小構成で試す
+		http
+        .formLogin()
+        .and()
+        .logout()
+        .and()
+        .authorizeHttpRequests(authz -> authz
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .permitAll()
+                .anyRequest().authenticated()
+        )
+//        .csrf(csrf -> csrf.disable());
+        .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+//        .addFilterAfter(new LoginUserFilter(),UsernamePasswordAuthenticationFilter.class);
+        .addFilter(new JsonAuthenticationFilter(authenticationManager))
+		.addFilterAfter(new LoginFilter(),JsonAuthenticationFilter.class);
 		return http.build();
 	}
 	
@@ -66,13 +98,27 @@ public class SecurityConfig {
 		return corsSource;
 	}
 	
+	// インメモリ認証
 	@Bean
 	public InMemoryUserDetailsManager userDetailsService() {
 		UserDetails user = User.withUsername("user")
 				.password(
-						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
+						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
 				).roles("USER")
 				.build();
 		return new InMemoryUserDetailsManager(user);
 	}
+	
+//	@Bean
+//	public UserDetailsManager userDetailsService() {
+//		JdbcUserDetailsManager users = new JdbcUserDetailsManager(this.dataSource);
+//		// DBに指定のデータを作成する
+//		UserDetails user = User.withUsername("user")
+//				.password(
+//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
+//				).roles("USER")
+//				.build();
+//		users.createUser(user);
+//		return users;
+//	}
 }
