@@ -7,11 +7,11 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 	
 	@Autowired
@@ -77,11 +78,20 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest().authenticated()
         )
-//        .csrf(csrf -> csrf.disable());
-        .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+        .csrf(csrf -> csrf.disable())
+//        .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
 //        .addFilterAfter(new LoginUserFilter(),UsernamePasswordAuthenticationFilter.class);
         .addFilter(new JsonAuthenticationFilter(authenticationManager))
 		.addFilterAfter(new LoginFilter(),JsonAuthenticationFilter.class);
+		
+//		http
+//		    .authorizeHttpRequests(requests -> requests
+//		    		.requestMatchers("/", "/home").permitAll()
+//		    		.anyRequest().authenticated()
+//		    ).formLogin(form -> form
+//		    		.loginPage("/login")
+//		    		.permitAll()
+//		    );
 		return http.build();
 	}
 	
@@ -102,10 +112,14 @@ public class SecurityConfig {
 	@Bean
 	public InMemoryUserDetailsManager userDetailsService() {
 		UserDetails user = User.withUsername("user")
-				.password(
-						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
-				).roles("USER")
+//				.password(
+//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
+//				)
+				.password("{bcrypt}\\$2a\\$10\\$1gHHMqYmv7spE.896lYtKuenhXSRGyZ0FK.JTzAOSD6qgRKtPl5wy")
+				.roles("USER")
 				.build();
+		System.out.println(user.getUsername());
+		System.out.println(user.getPassword());
 		return new InMemoryUserDetailsManager(user);
 	}
 	
