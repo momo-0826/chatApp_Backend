@@ -3,7 +3,6 @@ package chatApp.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -69,20 +69,23 @@ public class SecurityConfig {
 		
 		// 最小構成で試す
 		http
-        .formLogin()
-        .and()
-        .logout()
-        .and()
+        .formLogin((form) -> form
+				.loginPage("/login")
+				.permitAll()
+		)
+        .logout((logout) -> logout.permitAll())
         .authorizeHttpRequests(authz -> authz
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+        		.requestMatchers("/", "/home", "/api/chatapp/login")
                 .permitAll()
                 .anyRequest().authenticated()
         )
         .csrf(csrf -> csrf.disable())
 //        .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
 //        .addFilterAfter(new LoginUserFilter(),UsernamePasswordAuthenticationFilter.class);
-        .addFilter(new JsonAuthenticationFilter(authenticationManager))
-		.addFilterAfter(new LoginFilter(),JsonAuthenticationFilter.class);
+//        .addFilter(new JsonAuthenticationFilter(authenticationManager))
+//		.addFilterAfter(new LoginFilter(),JsonAuthenticationFilter.class)
+		;
 		
 //		http
 //		    .authorizeHttpRequests(requests -> requests
@@ -110,7 +113,7 @@ public class SecurityConfig {
 	
 	// インメモリ認証
 	@Bean
-	public InMemoryUserDetailsManager userDetailsService() {
+	public UserDetailsService userDetailsService() {
 		UserDetails user = User.withUsername("user")
 //				.password(
 //						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
