@@ -11,10 +11,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,11 +34,13 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
 		.authorizeHttpRequests((requests) -> requests
-			.requestMatchers("/", "/home", "/login").permitAll()
+			.requestMatchers("/", "/hello", "/login").permitAll()
 			.anyRequest().authenticated()
 		)
 		.formLogin((form) -> form
 //			.loginPage("/login")
+			.defaultSuccessUrl("/hello")
+			.failureUrl("/error")
 			.permitAll()
 		)
 		.logout((logout) -> logout.permitAll()
@@ -60,21 +62,38 @@ public class SecurityConfig {
 		return corsSource;
 	}
 	
-	// インメモリ認証
+//	// インメモリ認証
+//	@Bean
+//	public UserDetailsService userDetailsService() {
+//		UserDetails user = User.withUsername("user")
+////				.password(
+////						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
+////				)
+//				.password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+//				.roles("USER")
+//				.build();
+//		System.out.println(user.getUsername());
+//		System.out.println(user.getPassword());
+//		return new InMemoryUserDetailsManager(user);
+//	}
+
+    // jdbc認証
 	@Bean
-	public UserDetailsService userDetailsService() {
+	public UserDetailsManager userDetailsService() {
+		// DB上のusersテーブルに指定のデータを作成する
+		JdbcUserDetailsManager users = new JdbcUserDetailsManager(this.dataSource);
+		
 		UserDetails user = User.withUsername("user")
 //				.password(
-//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("password")
+//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
 //				)
-				.password("{bcrypt}\\$2a\\$10\\$1gHHMqYmv7spE.896lYtKuenhXSRGyZ0FK.JTzAOSD6qgRKtPl5wy")
+				.password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 				.roles("USER")
 				.build();
-		System.out.println(user.getUsername());
-		System.out.println(user.getPassword());
-		return new InMemoryUserDetailsManager(user);
+		users.createUser(user);
+		return users;
 	}
-
+	
 	/**
      * パスワードをBCryptで暗号化するクラス
      * @return パスワードをBCryptで暗号化するクラスオブジェクト
@@ -83,17 +102,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-	
-//	@Bean
-//	public UserDetailsManager userDetailsService() {
-//		JdbcUserDetailsManager users = new JdbcUserDetailsManager(this.dataSource);
-//		// DBに指定のデータを作成する
-//		UserDetails user = User.withUsername("user")
-//				.password(
-//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
-//				).roles("USER")
-//				.build();
-//		users.createUser(user);
-//		return users;
-//	}
 }
