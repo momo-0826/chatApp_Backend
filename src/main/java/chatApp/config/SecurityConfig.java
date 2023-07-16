@@ -83,14 +83,25 @@ public class SecurityConfig {
 		// DB上のusersテーブルに指定のデータを作成する
 		JdbcUserDetailsManager users = new JdbcUserDetailsManager(this.dataSource);
 		
-		UserDetails user = User.withUsername("user")
-//				.password(
-//						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
-//				)
+//		UserDetails user = User.withUsername("user")
+////				.password(
+////						PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("test")
+////				)
+//				.password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+//				.roles("USER")
+//				.build();
+		UserDetails user = User.builder()
+				.username("user")
 				.password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
 				.roles("USER")
 				.build();
+		UserDetails admin = User.builder()
+				.username("admin")
+				.password("$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
+				.roles("USER", "ADMIN")
+				.build();
 		users.createUser(user);
+		users.createUser(admin);
 		return users;
 	}
 	
