@@ -24,7 +24,7 @@ public class UserInfo implements Serializable {
 	private Long id;
 	
 	// ユーザ名
-	@Column(name="user_name")
+	@Column(name="username")
 	private String userName;
 	
 	// パスワード
@@ -34,6 +34,10 @@ public class UserInfo implements Serializable {
 	// メールアドレス
 	@Column(name="email")
 	private String email;
+	
+	// enabled
+	@Column(name="enabled")
+	private Boolean enabled;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Friend> friend1;
