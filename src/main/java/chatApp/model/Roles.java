@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "roles")
-@IdClass(value = FriendKey.class)
+@IdClass(value = RolesKey.class)
 public class Roles {
 	
 	// ID
